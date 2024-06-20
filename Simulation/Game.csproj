@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SFML.Net" Version="2.5.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="SFML.Audio" />
+		<Reference Include="SFML.Graphics" />
+		<Reference Include="SFML.System" />
+		<Reference Include="SFML.Window" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Properties\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(ProjectDir)Resources\*&quot; &quot;$(TargetDir)Resources\&quot; /s /y" />
+	</Target>
+</Project>

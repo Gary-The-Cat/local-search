@@ -11,16 +11,21 @@ namespace Game.Helpers
     /// </summary>
     public static class WorldHelper
     {
+        private const float BiasFactor = 1;
         private static Random random = new Random();
 
         public static List<Individual> SpawnPopulation()
         {
             var population = new List<Individual>();
+            TownHelper.InitializeDistanceLookup(Configuration.TownCount);
 
             // Generate {PopulationCount} individuals
             while (population.Count < GAConfig.PopulationCount)
             {
-                var individual = GenerateIndividual(Configuration.TownCount);
+                var individual = population.Count % 2 == 0 
+                    ? GenerateIndividual(Configuration.TownCount)
+                    : GenerateBiasedIndividual(Configuration.TownCount);
+
                 if (!population.Contains(individual))
                 {
                     population.Add(individual);
@@ -39,6 +44,52 @@ namespace Game.Helpers
             sequence.Shuffle();
 
             // Create a new individual with our random sequence
+            return new Individual(sequence);
+        }
+        
+        public static Individual GenerateBiasedIndividual(int sequenceLength)
+        {
+            var sequence = new List<int>();
+            var availableTowns = Enumerable.Range(0, sequenceLength).ToList();
+            var random = new Random();
+            
+            // Select the first town randomly
+            int currentTown = availableTowns[random.Next(availableTowns.Count)];
+            sequence.Add(currentTown);
+            availableTowns.Remove(currentTown);
+
+            while (availableTowns.Count > 0)
+            {
+                var distances = availableTowns
+                    .Select(town => new { Town = town, Distance = TownHelper.TownDistanceMap[currentTown, town] })
+                    .ToList();
+
+                var weightedTowns = distances
+                    .Select(d => new { d.Town, Weight = Math.Pow(d.Distance, -BiasFactor) })
+                    .ToList();
+
+                var totalWeight = weightedTowns.Sum(w => w.Weight);
+                var randomWeight = random.NextDouble() * totalWeight;
+                var cumulativeWeight = 0.0;
+
+                int selectedTown = weightedTowns.First().Town;
+
+                foreach (var wt in weightedTowns)
+                {
+                    cumulativeWeight += wt.Weight;
+                    if (cumulativeWeight >= randomWeight)
+                    {
+                        selectedTown = wt.Town;
+                        break;
+                    }
+                }
+
+                sequence.Add(selectedTown);
+                availableTowns.Remove(selectedTown);
+                currentTown = selectedTown;
+            }
+
+            // Create a new individual with our biased sequence
             return new Individual(sequence);
         }
 

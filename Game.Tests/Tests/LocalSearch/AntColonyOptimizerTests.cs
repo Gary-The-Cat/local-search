@@ -27,7 +27,7 @@ public class AntColonyOptimizerTests
         individual.UpdateFitness();
 
         double initialFitness = individual.DistanceFitness + individual.TimeFitness;
-        AntColonyOptimizer.ApplyACO(individual, TownHelper.TownPositions);
+        AntColonyOptimizer.ApplyACO(individual);
         double finalFitness = individual.DistanceFitness + individual.TimeFitness;
 
         Assert.IsTrue(finalFitness < initialFitness, "ACO did not improve the solution.");

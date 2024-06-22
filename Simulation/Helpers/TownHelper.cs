@@ -21,6 +21,21 @@ namespace Game.Helpers
 
         public static Dictionary<(int, int), float> PathSpeedLimits { get; private set; }
 
+        public static float[,] TownDistanceMap { get; private set; }
+
+        public static void InitializeDistanceLookup(int townCount)
+        {
+            TownDistanceMap = new float[townCount, townCount];
+
+            for (int i = 0; i < townCount; i++)
+            {
+                for (int j = 0; j < townCount; j++)
+                {
+                    TownDistanceMap[i, j] = TownPositions[i].Distance(TownPositions[j]);
+                }
+            }
+        }
+
         /// <summary>
         /// Static constructor to initialize static properties.
         /// </summary>
@@ -66,6 +81,8 @@ namespace Game.Helpers
 
                 TownPositions.AddRange(defaultPositions);
             }
+
+            InitializeDistanceLookup(TownPositions.Count());
 
             PopulateSpeedLimits();
         }

@@ -13,7 +13,7 @@ public class TwoOptOptimizerTests
     public void ApplyTwoOpt_ImprovesIndividualSequence()
     {
         // Arrange
-        Configuration.UseRandomTowns = false;
+        GAConfig.UseRandomTowns = false;
         TownHelper.Initialize([new(50, 50), new(0, 0), new(100, 100)]);
         var initialSequence = new List<int> { 0, 2, 1 };
         var individual = new Individual(initialSequence);

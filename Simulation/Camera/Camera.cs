@@ -18,11 +18,11 @@ namespace Game.ViewTools
 
         public Camera(FloatRect configuration)
         {
-            Position = new Vector2f(Configuration.Width / 2, Configuration.Height / 2);
+            Position = new Vector2f(SimulationConfig.Width / 2, SimulationConfig.Height / 2);
 
             this.view = new View(new FloatRect(
                 new Vector2f(0, 0),
-                new Vector2f(Configuration.Width, Configuration.Height)));
+                new Vector2f(SimulationConfig.Width, SimulationConfig.Height)));
 
             this.ViewPort = configuration;
         }
@@ -30,44 +30,44 @@ namespace Game.ViewTools
         public void Update(float deltaT)
         {
             // If we dont have camera movement enabled, return immediately
-            if (!Configuration.AllowCameraMovement)
+            if (!SimulationConfig.AllowCameraMovement)
             {
                 return;
             }
 
             // Camera movement is handled via an offset from the current position for simplicity.
-            var ratio = Configuration.Width / (float)Configuration.Height;
+            var ratio = SimulationConfig.Width / (float)SimulationConfig.Height;
             var offset = new Vector2f(0, 0);
 
             // Translation
-            if (Keyboard.IsKeyPressed(Configuration.PanUp))
+            if (Keyboard.IsKeyPressed(SimulationConfig.PanUp))
             {
-                offset.Y -= Configuration.CameraMovementSpeed * deltaT;
+                offset.Y -= SimulationConfig.CameraMovementSpeed * deltaT;
             }
 
-            if (Keyboard.IsKeyPressed(Configuration.PanLeft))
+            if (Keyboard.IsKeyPressed(SimulationConfig.PanLeft))
             {
-                offset.X -= Configuration.CameraMovementSpeed * deltaT / ratio;
+                offset.X -= SimulationConfig.CameraMovementSpeed * deltaT / ratio;
             }
 
-            if (Keyboard.IsKeyPressed(Configuration.PanDown))
+            if (Keyboard.IsKeyPressed(SimulationConfig.PanDown))
             {
-                offset.Y += Configuration.CameraMovementSpeed * deltaT;
+                offset.Y += SimulationConfig.CameraMovementSpeed * deltaT;
             }
 
-            if (Keyboard.IsKeyPressed(Configuration.PanRight))
+            if (Keyboard.IsKeyPressed(SimulationConfig.PanRight))
             {
-                offset.X += Configuration.CameraMovementSpeed * deltaT / ratio;
+                offset.X += SimulationConfig.CameraMovementSpeed * deltaT / ratio;
             }
 
             // Zoom
-            if (Keyboard.IsKeyPressed(Configuration.ZoomIn))
+            if (Keyboard.IsKeyPressed(SimulationConfig.ZoomIn))
             {
-                this.Zoom += Configuration.CameraZoomSpeed * deltaT;
+                this.Zoom += SimulationConfig.CameraZoomSpeed * deltaT;
             }
-            else if (Keyboard.IsKeyPressed(Configuration.ZoomOut))
+            else if (Keyboard.IsKeyPressed(SimulationConfig.ZoomOut))
             {
-                this.Zoom -= Configuration.CameraZoomSpeed * deltaT;
+                this.Zoom -= SimulationConfig.CameraZoomSpeed * deltaT;
             }
             else
             {
@@ -75,14 +75,14 @@ namespace Game.ViewTools
             }
 
             // Rotation
-            if (Keyboard.IsKeyPressed(Configuration.RotateLeft))
+            if (Keyboard.IsKeyPressed(SimulationConfig.RotateLeft))
             {
-                this.Rotation -= Configuration.CameraRotationSpeed * deltaT;
+                this.Rotation -= SimulationConfig.CameraRotationSpeed * deltaT;
             }
 
-            if (Keyboard.IsKeyPressed(Configuration.RotateRight))
+            if (Keyboard.IsKeyPressed(SimulationConfig.RotateRight))
             {
-                this.Rotation += Configuration.CameraRotationSpeed * deltaT;
+                this.Rotation += SimulationConfig.CameraRotationSpeed * deltaT;
             }
 
             // Update all the things we just calculated.
@@ -124,7 +124,7 @@ namespace Game.ViewTools
 
         private float GetDesiredAspectRatio()
         {
-            return Configuration.Width / (float)Configuration.Height;
+            return SimulationConfig.Width / (float)SimulationConfig.Height;
         }
 
         public View GetView()

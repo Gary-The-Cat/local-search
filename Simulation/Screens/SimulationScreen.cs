@@ -14,11 +14,11 @@ namespace Game.Screens
     {
         private readonly List<ConvexShape> pathLines;
 
-        private static Vector2f totalDistanceStringPosition = new Vector2f(Configuration.Width / 2, 50);
+        private static Vector2f totalDistanceStringPosition = new Vector2f(SimulationConfig.Width / 2, 50);
 
         private static Vector2f generationStringPosition = new Vector2f(50, 50);
 
-        private static Vector2f quitStringPosition = new Vector2f(450, Configuration.Height - 100);
+        private static Vector2f quitStringPosition = new Vector2f(450, SimulationConfig.Height - 100);
 
         private List<RectangleShape> townVisuals;
 
@@ -50,7 +50,7 @@ namespace Game.Screens
             TownFactory.GetTowns().ForEach(t => this.townVisuals.Add(t.Shape));
 
             // Create a camera instance to handle the changing of window sizes
-            Camera = new Camera(Configuration.SinglePlayer);
+            Camera = new Camera(SimulationConfig.SinglePlayer);
 
             // Create a 'FontText' which is a simple wrapper to easily draw text to the screen.
             totalDistanceString = new FontText(new Font("Resources/font.ttf"), string.Empty, Color.Black, 3);

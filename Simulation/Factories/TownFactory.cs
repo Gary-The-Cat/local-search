@@ -1,4 +1,5 @@
 ﻿using Game.DataStructures;
+using Game.GeneticAlgorithm;
 using Game.Helpers;
 using SFML.Graphics;
 using System;
@@ -31,7 +32,7 @@ namespace Game.Factories
         // Determines the texture path for a town based on the configuration
         private static string GetTownTexture(int index)
         {
-            return Configuration.UseRandomTowns
+            return GAConfig.UseRandomTowns
                 ? $"Resources/Town_{random.Next(1, 10)}.png"
                 : $"Resources/Town_{index + 1}.png";
         }

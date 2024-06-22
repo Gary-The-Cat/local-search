@@ -37,7 +37,7 @@ namespace Game
         {
             // Create the main window
             window = new RenderWindow(
-                new VideoMode(Configuration.Width, Configuration.Height), 
+                new VideoMode(SimulationConfig.Width, SimulationConfig.Height), 
                 "World Simulation", 
                 Styles.Fullscreen,
                 new ContextSettings() { AntialiasingLevel = 8 });
@@ -59,8 +59,8 @@ namespace Game
 
             // Create a simulation screen. Note that screens can be stacked on top of one another
             // in the screen manager that has been omitted from this specific repository.
-            pathScreen = new SimulationScreen(window, Configuration.SinglePlayer);
-            paretoScreen = new ParetoVisualScreen(window, Configuration.SinglePlayer, world.Population);
+            pathScreen = new SimulationScreen(window, SimulationConfig.SinglePlayer);
+            paretoScreen = new ParetoVisualScreen(window, SimulationConfig.SinglePlayer, world.Population);
 
             // Add the screens to the manager
             screenManager.AddScreen(paretoScreen);
@@ -92,7 +92,7 @@ namespace Game
                 float deltaT = clock.Restart().AsMicroseconds() / 1000000f;
 
                 // Clear the previous frame
-                window.Clear(Configuration.Background);
+                window.Clear(SimulationConfig.Background);
                 
                 // Process events
                 window.DispatchEvents();
@@ -145,7 +145,7 @@ namespace Game
                 this.ProcessUserInput();
 
                 // Check to see if the user wants to stop the simulation.
-                if (Keyboard.IsKeyPressed(Configuration.QuitKey) || 
+                if (Keyboard.IsKeyPressed(SimulationConfig.QuitKey) || 
                     Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
                     return;
@@ -156,7 +156,7 @@ namespace Game
         private void ProcessUserInput()
         {
             // If the spacebar has been just pressed, toggle the pareto visualisation
-            if (KeyboardHelper.IsKeyJustPressed(Configuration.ParetoVisualisationKey))
+            if (KeyboardHelper.IsKeyJustPressed(SimulationConfig.ParetoVisualisationKey))
             {
                 paretoScreen.SetActiveState(!paretoScreen.IsDraw);
             }
@@ -171,12 +171,12 @@ namespace Game
         private void SetParetoConfiguration()
         {
             // Set the position & Size
-            if (Configuration.UseRandomTowns)
+            if (GAConfig.UseRandomTowns)
             {
                 paretoScreen.Camera.Position = 
                     new Vector2f(
-                        (Configuration.Width / Configuration.Scale) / 2, 
-                        (Configuration.Height / Configuration.Scale) / 2);
+                        (SimulationConfig.Width / SimulationConfig.Scale) / 2, 
+                        (SimulationConfig.Height / SimulationConfig.Scale) / 2);
 
                 paretoScreen.Camera.GetView().Zoom(0.3f);
             }

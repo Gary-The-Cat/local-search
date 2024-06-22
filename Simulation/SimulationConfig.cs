@@ -1,13 +1,14 @@
-﻿using Game.Helpers;
+﻿using Game.GeneticAlgorithm;
+using Game.Helpers;
 using SFML.Graphics;
 using SFML.Window;
 using static SFML.Window.Keyboard;
 
 namespace Game
 {
-    public static class Configuration
+    public static class SimulationConfig
     {
-        public static float Scale => UseRandomTowns ? 4f : 1f;
+        public static float Scale => GAConfig.UseRandomTowns ? 4f : 1f;
 
         public static uint Height => (uint)(2160 * Scale);
 
@@ -63,13 +64,5 @@ namespace Game
         public static FloatRect FourPlayerBottomLeft => new FloatRect(0, 0.5f, 0.5f, 0.5f);
 
         public static FloatRect FourPlayerBottomRight => new FloatRect(0.5f, 0.5f, 0.5f, 0.5f);
-
-        // WARNING: Towns may overlap as there is no logic for their placement.
-        public static bool UseRandomTowns { get; set; } = true;
-
-        // NOTE: TownCount only applies when using random towns.
-        public static int RandomTownCount => 100;
-
-        public static int TownCount => UseRandomTowns ? RandomTownCount : TownHelper.TownPositions.Count;
     }
 }

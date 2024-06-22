@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.ExtensionMethods;
 using System.Linq;
 using System.Diagnostics;
+using Game.GeneticAlgorithm;
 
 namespace Game.Helpers
 {
@@ -55,9 +56,9 @@ namespace Game.Helpers
             TownPositions.Clear();
             PathSpeedLimits.Clear();
 
-            if (Configuration.UseRandomTowns)
+            if (GAConfig.UseRandomTowns)
             {
-                PopulateRandomTowns(Configuration.RandomTownCount);
+                PopulateRandomTowns(GAConfig.RandomTownCount);
             }
             else if (userPredefinedPositions != null)
             {
@@ -234,8 +235,8 @@ namespace Game.Helpers
         {
             return new Vector2f
             {
-                X = 100 + ((float)random.NextDouble() * (Configuration.Width - 100)),
-                Y = 100 + ((float)random.NextDouble() * (Configuration.Height - 100))
+                X = 100 + ((float)random.NextDouble() * (SimulationConfig.Width - 100)),
+                Y = 100 + ((float)random.NextDouble() * (SimulationConfig.Height - 100))
             };
         }
     }

@@ -20,7 +20,7 @@ namespace Game.Tests
         [TestMethod]
         public void GenerateIndividualTest()
         {
-            var individual = WorldHelper.GenerateIndividual(Configuration.TownCount);
+            var individual = WorldHelper.GenerateIndividual(GAConfig.TownCount);
 
             // Ensure that individual contains no repeated values
             var uniqueValueGroups = individual.Sequence.GroupBy(s => s);

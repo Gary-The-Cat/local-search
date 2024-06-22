@@ -14,22 +14,15 @@ namespace Game.GeneticAlgorithm
 
         public List<Individual> Population { get; set; }
 
-        // Configurable parameters
-        public int GenerationsBetweenLocalSearch { get; set; } = 5;
-
-        // 5% of the population
-        public double LocalSearchPercentage { get; set; } = 0.05;
-        public bool EnableLocalACOSearch { get; set; } = true;
-        public bool EnableLocalTwoOptSearch { get; set; } = false;
-
         // Toggle flag for visualization mode
         public bool ShowPheromonePaths { get; set; } = false;
 
         public List<double> FitnessOverTime { get; private set; }
+
         public int GenerationCount { get; private set; } = 0;
+
         public int NoImprovementCount { get; private set; } = 0;
 
-        public int MaxIterations { get; } = 10;
 
         // Checks if the algorithm has converged based on generation or no improvement count
         public bool HasConverged =>
@@ -76,13 +69,13 @@ namespace Game.GeneticAlgorithm
             Population.AddRange(offspring);
 
             // Perform local search if enabled
-            if (GenerationCount % GenerationsBetweenLocalSearch == 0)
+            if (GenerationCount % GAConfig.GenerationsBetweenLocalSearch == 0)
             {
-                if (EnableLocalACOSearch)
+                if (GAConfig.IsLocalACOSearchEnabled)
                 {
                     PerformLocalACOSearch();
                 }
-                if (EnableLocalTwoOptSearch)
+                if (GAConfig.IsLocalTwoOptSearchEnabled)
                 {
                     PerformLocalTwoOptSearch();
                 }
@@ -101,7 +94,7 @@ namespace Game.GeneticAlgorithm
         // Performs local ACO search on a subset of the population
         private void PerformLocalACOSearch()
         {
-            int numIndividualsToImprove = (int)(Population.Count * LocalSearchPercentage);
+            int numIndividualsToImprove = (int)(Population.Count * GAConfig.LocalSearchPopulationCountFactor);
             var individualsToImprove = Population.OrderBy(x => Guid.NewGuid()).Take(numIndividualsToImprove).ToList();
 
             individualsToImprove.ForEach(AntColonyOptimizer.ApplyACO);
@@ -110,7 +103,7 @@ namespace Game.GeneticAlgorithm
         // Performs local Two-Opt search on a subset of the population
         private void PerformLocalTwoOptSearch()
         {
-            int numIndividualsToImprove = (int)(Population.Count * LocalSearchPercentage);
+            int numIndividualsToImprove = (int)(Population.Count * GAConfig.LocalSearchPopulationCountFactor);
             var individualsToImprove = Population.OrderBy(x => Guid.NewGuid()).Take(numIndividualsToImprove).ToList();
 
             individualsToImprove.ForEach(TwoOptOptimizer.ApplyTwoOpt);
@@ -122,7 +115,7 @@ namespace Game.GeneticAlgorithm
             var bestIndividuals = Population.Where(i => i.Rank == 0).ToList();
             var averageTime = bestIndividuals.Average(b => b.TimeFitness);
             var averageDistance = bestIndividuals.Average(b => b.DistanceFitness);
-            var isLocalSearchGeneration = GenerationCount % GenerationsBetweenLocalSearch == 0;
+            var isLocalSearchGeneration = GenerationCount % GAConfig.GenerationsBetweenLocalSearch == 0;
             Debug.WriteLine($"{isLocalSearchGeneration}:\t Time {averageTime:F2},\t Distance {averageDistance:F2}");
         }
 

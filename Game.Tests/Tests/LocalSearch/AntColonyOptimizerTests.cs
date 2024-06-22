@@ -19,7 +19,7 @@ public class AntColonyOptimizerTests
     [TestMethod]
     public void TestACOImprovesSolution()
     {
-        Configuration.UseRandomTowns = false;
+        GAConfig.UseRandomTowns = false;
         TownHelper.Initialize(new List<Vector2f> { new(0, 50), new(0, 0), new(0, 100), new(0, 30) });
 
         var initialSequence = new List<int> { 0, 1, 2, 3 };

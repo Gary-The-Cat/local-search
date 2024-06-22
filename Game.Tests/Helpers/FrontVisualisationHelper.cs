@@ -24,7 +24,7 @@ namespace Game.Tests.Helpers
             // Handle window events
             window.Closed += (sender, b) => ((RenderWindow)sender).Close(); 
 
-            var paretoScreen = new ParetoVisualScreen(window, Configuration.SinglePlayer, population); 
+            var paretoScreen = new ParetoVisualScreen(window, SimulationConfig.SinglePlayer, population); 
             
             paretoScreen.Camera.SetCentre(new SFML.System.Vector2f(1880, 950));
             paretoScreen.Camera.GetView().Zoom(0.5f);
@@ -33,11 +33,11 @@ namespace Game.Tests.Helpers
             window.SetView(paretoScreen.Camera.GetView());
 
             while (!Keyboard.IsKeyPressed(Keyboard.Key.Escape) 
-                && !Keyboard.IsKeyPressed(Configuration.QuitKey)
+                && !Keyboard.IsKeyPressed(SimulationConfig.QuitKey)
                 && window.IsOpen)
             {
                 // Clear the previous frame
-                window.Clear(Configuration.Background);
+                window.Clear(SimulationConfig.Background);
 
                 // Process events
                 window.DispatchEvents();

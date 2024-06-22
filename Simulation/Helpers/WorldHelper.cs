@@ -17,14 +17,16 @@ namespace Game.Helpers
         public static List<Individual> SpawnPopulation()
         {
             var population = new List<Individual>();
-            TownHelper.InitializeDistanceLookup(Configuration.TownCount);
+            TownHelper.InitializeDistanceLookup(GAConfig.TownCount);
 
             // Generate {PopulationCount} individuals
             while (population.Count < GAConfig.PopulationCount)
             {
-                var individual = population.Count % 2 == 0 
-                    ? GenerateIndividual(Configuration.TownCount)
-                    : GenerateBiasedIndividual(Configuration.TownCount);
+                var isGeneratingBiasedRandomIndividual = GAConfig.UseBiasRandomSpawning && population.Count % 2 == 0;
+
+                var individual = isGeneratingBiasedRandomIndividual
+                    ? GenerateBiasedIndividual(GAConfig.TownCount)
+                    : GenerateIndividual(GAConfig.TownCount);
 
                 if (!population.Contains(individual))
                 {

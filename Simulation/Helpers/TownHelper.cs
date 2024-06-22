@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Game.ExtensionMethods;
 using System.Linq;
-using System.Diagnostics;
 using Game.GeneticAlgorithm;
 
 namespace Game.Helpers
@@ -16,7 +15,6 @@ namespace Game.Helpers
         private const int MinimumSpeedInPixels = 10;
         private const int MaximumSpeedInPixels = 100;
         private const int SpeedRangeInPixels = MaximumSpeedInPixels - MinimumSpeedInPixels;
-        private static Random random = new Random();
 
         public static List<Vector2f> TownPositions { get; private set; }
 
@@ -199,8 +197,6 @@ namespace Game.Helpers
 
         private static void PopulateSpeedLimits()
         {
-            var localRandom = new Random(17);
-
             for (int fromTown = 0; fromTown < TownPositions.Count; fromTown++)
             {
                 for (int toTown = 0; toTown < TownPositions.Count; toTown++)
@@ -217,7 +213,7 @@ namespace Game.Helpers
                     // Add the speed for this directional path
                     PathSpeedLimits.Add(
                         (fromTown, toTown),
-                        (float)(MinimumSpeedInPixels + SpeedRangeInPixels * localRandom.NextDouble() * pathDistance / 1000));
+                        (float)(MinimumSpeedInPixels + SpeedRangeInPixels * WorldHelper.Random.NextDouble() * pathDistance / 1000));
                 }
             }
         }
@@ -235,8 +231,8 @@ namespace Game.Helpers
         {
             return new Vector2f
             {
-                X = 100 + ((float)random.NextDouble() * (SimulationConfig.Width - 100)),
-                Y = 100 + ((float)random.NextDouble() * (SimulationConfig.Height - 100))
+                X = 100 + ((float)WorldHelper.Random.NextDouble() * (SimulationConfig.Width - 100)),
+                Y = 100 + ((float)WorldHelper.Random.NextDouble() * (SimulationConfig.Height - 100))
             };
         }
     }

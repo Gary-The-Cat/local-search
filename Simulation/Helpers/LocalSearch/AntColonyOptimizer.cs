@@ -40,7 +40,6 @@ public static class AntColonyOptimizer
             pheromones[i - 1, i] += 0.1f;
         }
 
-        Random rand = new Random();
         List<int> bestPath = null;
         float bestLength = float.MaxValue;
 
@@ -56,7 +55,7 @@ public static class AntColonyOptimizer
                 {
                     int currentTown = path.Last();
                     float[] probabilities = CalculateProbabilities(currentTown, path, pheromones, distances);
-                    int nextTown = SelectNextTown(probabilities, path, rand);
+                    int nextTown = SelectNextTown(probabilities, path);
                     path.Add(nextTown);
                 }
                 paths.Add(path);
@@ -106,10 +105,10 @@ public static class AntColonyOptimizer
         return probabilities;
     }
 
-    private static int SelectNextTown(float[] probabilities, List<int> path, Random rand)
+    private static int SelectNextTown(float[] probabilities, List<int> path)
     {
         float cumulative = 0.0f;
-        float r = (float)rand.NextDouble();
+        float r = (float)WorldHelper.Random.NextDouble();
         List<int> remainingTowns = new List<int>();
 
         for (int i = 0; i < probabilities.Length; i++)
@@ -132,7 +131,7 @@ public static class AntColonyOptimizer
         if (totalProbability == 0)
         {
             // If all remaining probabilities are 0, select a town randomly
-            return remainingTowns[rand.Next(remainingTowns.Count)];
+            return remainingTowns[WorldHelper.Random.Next(remainingTowns.Count)];
         }
 
         for (int i = 0; i < remainingTowns.Count; i++)

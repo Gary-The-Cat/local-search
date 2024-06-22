@@ -12,14 +12,17 @@ namespace Game.GeneticAlgorithm
 
         public static int MaxNoImprovementCount => 20;
 
-        public static bool UseBiasRandomSpawning => true;
+        public static bool UseBiasRandomSpawning => false;
+
+        // Higher values make the spawning more greedy.
+        public static float BiasSpawningFactor = 1.5f;
 
         public static int GenerationsBetweenLocalSearch => 5;
 
         // 5% of the population are used in local search.
         public static double LocalSearchPopulationCountFactor => 0.05;
         
-        public static bool IsLocalACOSearchEnabled => false;
+        public static bool IsLocalACOSearchEnabled => true;
         
         public static bool IsLocalTwoOptSearchEnabled => false;
 

@@ -1,4 +1,5 @@
-﻿using Game.Helpers;
+﻿using Game.GeneticAlgorithm.EqualityComparers;
+using Game.Helpers;
 using Game.Helpers.LocalSearch;
 using SFML.Graphics;
 using System;
@@ -125,7 +126,7 @@ namespace Game.GeneticAlgorithm
             return currentPopulation
                 .OrderBy(i => i.Rank)
                 .ThenByDescending(i => i.CrowdingDistance)
-                .Distinct()
+                .Distinct(new IndividualEqualityComparer())
                 .Take(GAConfig.PopulationCount)
                 .ToList();
         }

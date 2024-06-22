@@ -7,7 +7,7 @@ namespace Game.Helpers.LocalSearch;
 public static class TwoOptOptimizer
 {
     // Maximum iterations for 2-opt
-    public static int MaxIterations { get; set; } = 100;
+    public static int MaxIterations { get; set; } = 20;
 
     /// <summary>
     /// Applies the 2-opt algorithm to improve the given individual's sequence by reversing segments of the tour.
@@ -17,43 +17,38 @@ public static class TwoOptOptimizer
     public static void ApplyTwoOpt(Individual individual)
     {
         int size = individual.Sequence.Count;
-        bool improvementFound = true;
+        var random = new Random();
         int iterations = 0;
 
-        // Continue while improvements are found and the iteration limit has not been reached
-        while (improvementFound && iterations < MaxIterations)
+        // Continue while the iteration limit has not been reached
+        while (iterations < MaxIterations)
         {
-            improvementFound = false;
             iterations++;
 
-            // Outer loop to select the first edge
-            for (int i = 0; i < size - 1; i++)
+            // Randomly select two indices to perform the 2-opt swap
+            int i = random.Next(size - 1);
+            int k = random.Next(i + 1, size);
+
+            // Store the current fitness value
+            double distanceFitness = individual.DistanceFitness;
+
+            // Perform 2-opt swap: reverse the segment between indices i and k
+            ReverseSegmentInPlace(individual.Sequence, i, k);
+
+            // Update the fitness value after reversing the segment
+            individual.UpdateFitness();
+
+            // Check if the new fitness value is an improvement
+            if (individual.DistanceFitness < distanceFitness)
             {
-                // Inner loop to select the second edge, ensuring it starts after the first edge
-                for (int k = i + 1; k < size; k++)
-                {
-                    // Store the current fitness values
-                    double distanceFitness = individual.DistanceFitness;
-                    double timeFitness = individual.TimeFitness;
-
-                    // Perform 2-opt swap: reverse the segment between indices i and k
-                    ReverseSegmentInPlace(individual.Sequence, i, k);
-                    // Update the fitness values after reversing the segment
-                    individual.UpdateFitness();
-
-                    // Check if the new fitness values are an improvement
-                    if (IsImprovement(individual.DistanceFitness, individual.TimeFitness, distanceFitness, timeFitness))
-                    {
-                        // If an improvement is found, set the flag to true
-                        improvementFound = true;
-                    }
-                    else
-                    {
-                        // Revert the change if no improvement
-                        ReverseSegmentInPlace(individual.Sequence, i, k);
-                        individual.UpdateFitness();
-                    }
-                }
+                // If an improvement is found, keep the change
+                iterations = 0; // Reset the iteration counter if improvement is found
+            }
+            else
+            {
+                // Revert the change if no improvement
+                ReverseSegmentInPlace(individual.Sequence, i, k);
+                individual.UpdateFitness();
             }
         }
     }
@@ -72,19 +67,5 @@ public static class TwoOptOptimizer
             sequence[i] = sequence[j];
             sequence[j] = temp;
         }
-    }
-
-    /// <summary>
-    /// Determines if the new fitness values represent an improvement over the current fitness values.
-    /// </summary>
-    /// <param name="newDistanceFitness">The new distance fitness value.</param>
-    /// <param name="newTimeFitness">The new time fitness value.</param>
-    /// <param name="currentDistanceFitness">The current distance fitness value.</param>
-    /// <param name="currentTimeFitness">The current time fitness value.</param>
-    /// <returns>True if the new fitness values are an improvement, otherwise false.</returns>
-    private static bool IsImprovement(double newDistanceFitness, double newTimeFitness, double currentDistanceFitness, double currentTimeFitness)
-    {
-        return (newDistanceFitness <= currentDistanceFitness && newTimeFitness < currentTimeFitness) ||
-               (newDistanceFitness < currentDistanceFitness && newTimeFitness <= currentTimeFitness);
     }
 }

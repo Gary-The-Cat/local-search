@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Game.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace Game.ExtensionMethods
 {
     public static class ListExtensions
     {
-        private static Random random = new Random();
-
         // Shuffles the elements of the list in place
         public static void Shuffle<T>(this IList<T> list)
         {
@@ -14,7 +13,7 @@ namespace Game.ExtensionMethods
             while (count > 1)
             {
                 count--;
-                int randomIndex = random.Next(count + 1);
+                int randomIndex = WorldHelper.Random.Next(count + 1);
                 T temp = list[randomIndex];
                 list[randomIndex] = list[count];
                 list[count] = temp;

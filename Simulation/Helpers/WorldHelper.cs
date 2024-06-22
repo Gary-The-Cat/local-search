@@ -11,8 +11,7 @@ namespace Game.Helpers
     /// </summary>
     public static class WorldHelper
     {
-        private const float BiasFactor = 1;
-        private static Random random = new Random();
+        public static Random Random = new Random(42);
 
         public static List<Individual> SpawnPopulation()
         {
@@ -48,63 +47,65 @@ namespace Game.Helpers
             // Create a new individual with our random sequence
             return new Individual(sequence);
         }
-        
+
         public static Individual GenerateBiasedIndividual(int sequenceLength)
         {
             var sequence = new List<int>();
             var availableTowns = Enumerable.Range(0, sequenceLength).ToList();
-            var random = new Random();
-            
+
             // Select the first town randomly
-            int currentTown = availableTowns[random.Next(availableTowns.Count)];
+            int currentTown = availableTowns[Random.Next(availableTowns.Count)];
             sequence.Add(currentTown);
             availableTowns.Remove(currentTown);
 
             while (availableTowns.Count > 0)
             {
-                var distances = availableTowns
-                    .Select(town => new { Town = town, Distance = TownHelper.TownDistanceMap[currentTown, town] })
+                // Calculate distances and weights
+                var weightedTowns = availableTowns
+                    .Select(town => new
+                    {
+                        Town = town,
+                        Weight = Math.Pow(TownHelper.TownDistanceMap[currentTown, town], -GAConfig.BiasSpawningFactor)
+                    })
                     .ToList();
 
-                var weightedTowns = distances
-                    .Select(d => new { d.Town, Weight = Math.Pow(d.Distance, -BiasFactor) })
-                    .ToList();
-
+                // Select the next town based on weighted random choice
                 var totalWeight = weightedTowns.Sum(w => w.Weight);
-                var randomWeight = random.NextDouble() * totalWeight;
+                var randomWeight = Random.NextDouble() * totalWeight;
                 var cumulativeWeight = 0.0;
-
                 int selectedTown = weightedTowns.First().Town;
 
-                foreach (var wt in weightedTowns)
+                foreach (var weightedTown in weightedTowns)
                 {
-                    cumulativeWeight += wt.Weight;
+                    cumulativeWeight += weightedTown.Weight;
                     if (cumulativeWeight >= randomWeight)
                     {
-                        selectedTown = wt.Town;
+                        selectedTown = weightedTown.Town;
                         break;
                     }
                 }
 
+                // Update sequence and available towns
                 sequence.Add(selectedTown);
                 availableTowns.Remove(selectedTown);
                 currentTown = selectedTown;
             }
 
-            // Create a new individual with our biased sequence
+            // Return the new individual with the generated sequence
             return new Individual(sequence);
         }
+
 
         public static (Individual, Individual) GetCandidateParents(List<Individual> population)
         {
             // Grab two random individuals from the population
-            var candidateA = population[random.Next(population.Count())];
-            var candidateB = population[random.Next(population.Count())];
+            var candidateA = population[Random.Next(population.Count())];
+            var candidateB = population[Random.Next(population.Count())];
 
             // Ensure that the two individuals are unique
             while (candidateA == candidateB)
             {
-                candidateB = population[random.Next(population.Count())];
+                candidateB = population[Random.Next(population.Count())];
             }
 
             return (candidateA, candidateB);
@@ -133,7 +134,7 @@ namespace Game.Helpers
         {
             // Generate a number between 1 and sequence length - 1 to be our crossover position
             crossoverPosition = crossoverPosition == -1 
-                ? random.Next(1, individualA.Sequence.Count - 1)
+                ? Random.Next(1, individualA.Sequence.Count - 1)
                 : crossoverPosition;
 
             // Grab the head from the first individual
@@ -161,13 +162,13 @@ namespace Game.Helpers
         public static (int, int) GetUniqueTowns(List<int> sequence)
         {
             // Randomly select two towns
-            var townA = random.Next(sequence.Count());
-            var townB = random.Next(sequence.Count());
+            var townA = Random.Next(sequence.Count());
+            var townB = Random.Next(sequence.Count());
 
             // Ensure that the two towns are not the same
             while (townB == townA)
             {
-                townB = random.Next(sequence.Count());
+                townB = Random.Next(sequence.Count());
             }
 
             return (townA, townB);
@@ -223,13 +224,13 @@ namespace Game.Helpers
             var newindividualB = new Individual(individualB.Sequence);
 
             // Generate a number between 0-1, if it is lower than our mutation chance (0.05 - 5%), mutate!
-            if (random.NextDouble() < GAConfig.MutationChance)
+            if (Random.NextDouble() < GAConfig.MutationChance)
             {
                 newIndividualA = DoMutate(individualA);
             }
 
             // Generate a number between 0-1, if it is lower than our mutation chance (0.05 - 5%), mutate!
-            if (random.NextDouble() < GAConfig.MutationChance)
+            if (Random.NextDouble() < GAConfig.MutationChance)
             {
                 newindividualB = DoMutate(individualB);
             }
@@ -240,7 +241,7 @@ namespace Game.Helpers
         private static Individual DoMutate(Individual individual)
         {
             // Half the time, use one mutation method, and other half use the other.
-            if (random.NextDouble() > 0.5)
+            if (Random.NextDouble() > 0.5)
             {
                 return DoSwapMutate(individual);
             }

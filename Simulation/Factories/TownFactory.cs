@@ -9,8 +9,6 @@ namespace Game.Factories
 {
     public static class TownFactory
     {
-        private static readonly Random random = new Random();
-
         // Generates a list of towns with textures based on configuration
         public static List<Town> GetTowns()
         {
@@ -33,7 +31,7 @@ namespace Game.Factories
         private static string GetTownTexture(int index)
         {
             return GAConfig.UseRandomTowns
-                ? $"Resources/Town_{random.Next(1, 10)}.png"
+                ? $"Resources/Town_{WorldHelper.Random.Next(1, 10)}.png"
                 : $"Resources/Town_{index + 1}.png";
         }
     }
